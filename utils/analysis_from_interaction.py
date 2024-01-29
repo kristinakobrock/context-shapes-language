@@ -4,7 +4,6 @@ from egg.core.language_analysis import calc_entropy, _hashable_tensor, Disent
 from sklearn.metrics import normalized_mutual_info_score
 from language_analysis_local import MessageLengthHierarchical
 import numpy as np
-import itertools
 import random
 import torch
 
@@ -45,22 +44,6 @@ def retrieve_fixed_vectors(target_objects):
     return fixed_vectors
 
 
-def convert_fixed_to_intentions(fixed_vectors):
-    """
-    NOTE: not needed right now
-    fixed vectors are 0: irrelevant, 1: relevant
-    intentions are 1: irrelevant, 0: relevant
-    """
-    intentions = []
-    for fixed in fixed_vectors:
-        intention = np.zeros(len(fixed))
-        for i, att in enumerate(fixed):
-            if att == 0:
-                intention[i] = 1
-        intentions.append(intention)
-    return np.asarray(intentions)
-
-
 def retrieve_concepts_sampling(target_objects, all_targets=False):
     """
     Builds concept representations consisting of one sampled target object and a fixed vector.
@@ -70,7 +53,7 @@ def retrieve_concepts_sampling(target_objects, all_targets=False):
         target_objects_sampled = target_objects
     else:
         target_objects_sampled = [random.choice(target_object) for target_object in target_objects]
-    return (np.asarray(target_objects_sampled), np.asarray(fixed_vectors))
+    return np.asarray(target_objects_sampled), np.asarray(fixed_vectors)
             
 
 def joint_entropy(xs, ys):
@@ -95,9 +78,7 @@ def retrieve_context_condition(targets, fixed, distractors):
             for k, attr in enumerate(t_obj[0]):
                 # if target attribute was fixed:
                 if fixed[i][k] == 1:
-                    #shared = np.zeros(len(t_obj))
                     # go through distractors
-                    #for dist_obj in distractors[i]:
                     # compare target attribute with distractor attribute
                     if attr == distractors[i][0][k]:
                         # count shared attributes
@@ -107,7 +88,6 @@ def retrieve_context_condition(targets, fixed, distractors):
                 if fixed[i][k] == 1:
                     if attr == distractors[i][0][k]:
                         shared = shared + 1
-        #print("target", t_obj, "fixed", fixed[i], "distractors", distractors[i][0], "shared", shared)
         context_conds.append(shared)  
     return context_conds
 
@@ -394,11 +374,8 @@ def symbol_frequency(interaction, n_attributes, n_values, vocab_size, is_gumbel=
     sender_input = interaction.sender_input
     n_objects = sender_input.shape[1]
     n_targets = int(n_objects/2)
-    #k_hots = sender_input[:, :-n_attributes]
-    #objects = k_hot_to_attributes(k_hots, n_values)
     target_objects = sender_input[:, :n_targets]
     target_objects = k_hot_to_attributes(target_objects, n_values)
-    #intentions = sender_input[:, -n_attributes:]  # (0=same, 1=any)
     (objects, fixed) = retrieve_concepts_sampling(target_objects)
 
     objects[fixed == 1] = np.nan
