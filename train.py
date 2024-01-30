@@ -23,7 +23,7 @@ SPLIT_ZERO_SHOT = (0.75, 0.25)
 def get_params(params):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('--load_dataset', type=str, default="dim(4,8).ds",
+    parser.add_argument('--load_dataset', type=str, default=None,
                         help='If provided that data set is loaded. Datasets can be generated with pickle.ds'
                              'This makes sense if running several runs with the exact same dataset.')
     parser.add_argument('--dimensions', nargs='+', type=int, default=[3, 3, 3])
