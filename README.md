@@ -1,6 +1,6 @@
 # context-shapes-language
-This repository accompanies the submission to LREC-COLING 2024: Context Shapes Emergent Communication about Concepts at
-Different Levels of Abstraction
+This repository accompanies Kobrock, K., Ohmer, X., Bruni, E., and Gotzner, N. (2024): Context Shapes Emergent Communication about Concepts at
+Different Levels of Abstraction (accepted at LREC-COLING).
 
 Implementation of a concept-level reference game in a language emergence paradigm using [EGG](https://github.com/facebookresearch/EGG/tree/main). The implementation 
 builds on the [hierarchical reference game](https://github.com/XeniaOhmer/hierarchical_reference_game/tree/master) by Ohmer et al. (2022) and the [concept game](https://github.com/jayelm/emergent-generalization/tree/master) by Mu & Goodman (2021).
