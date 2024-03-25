@@ -1,14 +1,19 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
 torch>=1.1.0
 torchvision
 scipy
 numpy
 pytest
 editdistance
-dataclasses
-rich
 scikit-learn
-wandb
-submitit
 matplotlib
 pandas
 tqdm
+itertools
+random
+os
+re
+pickle
+scikit-learn
