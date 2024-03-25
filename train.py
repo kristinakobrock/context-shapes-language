@@ -107,24 +107,8 @@ def train(opts, datasets, verbose_callbacks=False):
     test = torch.utils.data.DataLoader(test, batch_size=opts.batch_size, shuffle=False)
 
     # initialize sender and receiver agents
-    if opts.mu_and_goodman:
-        # use speaker hidden size also for listener (except explicitly given)
-        if not opts.listener_hidden_size:
-            opts.listener_hidden_size = opts.speaker_hidden_size
-        sender = Speaker(feature.FeatureMLP(
-            input_size=sum(dimensions),
-            output_size=int(opts.speaker_hidden_size / 2),
-            # divide by 2 to allow for concatenating prototype embeddings
-            n_layers=opts.speaker_n_layers,
-        ), n_targets=opts.game_size)
-        receiver = Listener(feature.FeatureMLP(
-            input_size=sum(dimensions),
-            output_size=opts.listener_hidden_size,
-            n_layers=opts.listener_n_layers,
-        ))
-    else:
-        sender = Sender(opts.hidden_size, sum(dimensions), opts.game_size, opts.context_unaware)
-        receiver = Receiver(sum(dimensions), opts.hidden_size)
+    sender = Sender(opts.hidden_size, sum(dimensions), opts.game_size, opts.context_unaware)
+    receiver = Receiver(sum(dimensions), opts.hidden_size)
 
     minimum_vocab_size = dimensions[0] + 1  # plus one for 'any'
     vocab_size = minimum_vocab_size * opts.vocab_size_factor + 1  # multiply by factor plus add one for eos-symbol
@@ -237,6 +221,8 @@ def main(params):
             opts.save_path = os.path.join(opts.path, folder_name, opts.game_setting)
             if not os.path.exists(opts.save_path) and opts.save:
                 os.makedirs(opts.save_path)
+
+        train(opts, data_set, verbose_callbacks=False)
 
 
 if __name__ == "__main__":
